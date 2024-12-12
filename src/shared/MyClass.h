@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MYCLASS_H
+#define MYCLASS_H
 #include <SFML/Graphics.hpp>
 class MyClass {
     public:
@@ -7,3 +8,4 @@ class MyClass {
     private:
         int value;
 };
+#endif
