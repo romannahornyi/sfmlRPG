@@ -31,6 +31,7 @@ target_compile_features(server PRIVATE cxx_std_17)
 # target_include_directories(server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/shared)
 add_library(U SHARED src/shared/MyClass.h src/shared/MyClass.cpp)
 target_link_libraries(client PUBLIC U)
+target_link_libraries(server PUBLIC U)
 if(WIN32)
     add_custom_command(
         TARGET client
