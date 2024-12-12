@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "../shared/MyClass.h"
+#include "MyClass.h"
 #include <iostream>
 int main() {
     MyClass item = MyClass(5);
