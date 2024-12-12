@@ -1,5 +1,9 @@
 #include <SFML/Graphics.hpp>
+#include "../shared/MyClass.h"
+#include <iostream>
 int main() {
+    MyClass item(5);
+    std::cout << item.getValue() << std::endl;
     sf::RenderWindow window(sf::VideoMode(640, 480), "Server");
     sf::CircleShape shape;
     while (window.isOpen()) {
