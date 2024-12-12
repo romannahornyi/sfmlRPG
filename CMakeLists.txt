@@ -13,8 +13,8 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(client src/client/main.cpp)
 add_executable(server src/server/main.cpp)
+add_executable(client src/client/main.cpp)
 target_link_libraries(client PRIVATE sfml-graphics)
 target_link_libraries(client PRIVATE sfml-system)
 target_link_libraries(client PRIVATE sfml-window)
