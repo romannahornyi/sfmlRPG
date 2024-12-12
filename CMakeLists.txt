@@ -27,6 +27,8 @@ target_link_libraries(server PRIVATE sfml-audio)
 target_link_libraries(server PRIVATE sfml-network)
 target_compile_features(client PRIVATE cxx_std_17)
 target_compile_features(server PRIVATE cxx_std_17)
+target_include_directories(client PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/shared)
+target_include_directories(server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/shared)
 
 if(WIN32)
     add_custom_command(
