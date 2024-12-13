@@ -14,8 +14,14 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 ADD_LIBRARY(SharedDir SHARED src/sharedDir/MyClass.h src/sharedDir/MyClass.cpp)
-ADD_LIBRARY(ClientLib STATIC src/clientLib/Zalupa.h src/clientLib/Zalupa.cpp)
-ADD_LIBRARY(ServerLib STATIC src/serverLib/A.h src/serverLib/A.cpp)
+ADD_LIBRARY(ClientLib STATIC 
+    src/clientLib/Client.h
+    src/clientLib/Client.cpp
+)
+ADD_LIBRARY(ServerLib STATIC 
+    src/serverLib/Server.h
+    src/serverLib/Server.cpp
+)
 ADD_EXECUTABLE(client src/client/main.cpp)
 ADD_EXECUTABLE(server src/server/main.cpp)
 target_link_libraries(SharedDir sfml-graphics)

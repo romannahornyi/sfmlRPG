@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include "MyClass.h"
-#include "Zalupa.h"
+#include "Client.h"
 #include <iostream>
 int main() {
     MyClass item(5);
-    Zalupa z(10);
-    std::cout << item.getValue() << ' ' << z.getZalupa() << std::endl;
-    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML works!");
+    Client c;
+    std::cout << item.getValue() << std::endl;
+    sf::RenderWindow window(sf::VideoMode(640, 480), "Client");
     sf::CircleShape shape(10.f);
     while (window.isOpen()) {
         sf::Event event;
