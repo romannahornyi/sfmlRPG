@@ -29,6 +29,7 @@ ADD_LIBRARY(ServerLib STATIC
 ADD_EXECUTABLE(client src/client/main.cpp)
 ADD_EXECUTABLE(server src/server/main.cpp)
 target_link_libraries(SharedDir sfml-graphics)
+target_link_libraries(SharedDir sfml-network)
 target_link_libraries(ServerLib SharedDir)
 target_link_libraries(ClientLib SharedDir)
 target_link_libraries(client SharedDir)

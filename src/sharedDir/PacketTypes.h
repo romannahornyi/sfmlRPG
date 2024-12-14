@@ -5,4 +5,4 @@ enum class PacketType {
     Disconnect = -1, Connect, Heartbeat, Snapshot,
     Player_Update, Message, Hurt, OutOfBounds
 };
-void StampPacket(const PacketType& type, sf::Packet& p);
+void StampPacket(const PacketType&, sf::Packet&);

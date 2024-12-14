@@ -29,7 +29,7 @@ void CommandProcess(Client* _client) {
     }
 };
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
     sf::IpAddress ip;
     PortNumber port;
     if (argc == 1) {
@@ -41,12 +41,12 @@ void main(int argc, char** argv) {
         ip = argv[1];
         port = atoi(argv[2]);
     } else {
-        return;
+        return 0;
     }
     Client client;
     client.SetServerInformation(ip, port);
     client.Setup(&HandlePacket);
-    sf::Thread c(&CommandProcess);
+    sf::Thread c(&CommandProcess, &client);
     if (client.Connect()) {
         c.launch();
         sf::Clock clock;
@@ -58,4 +58,5 @@ void main(int argc, char** argv) {
         std::cout << "Failed to connect." << std::endl;
     }
     std::cout << "Quitiing..." << std::endl;
+    return 0;
 };

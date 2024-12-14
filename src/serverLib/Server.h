@@ -18,7 +18,7 @@ struct ClientInfo {
     bool heartbeatWaiting;
     unsigned short heartbeatRetry;
     unsigned int ping;
-    ClientInfo::ClientInfo(const sf::IpAddress& _ip, const PortNumber& _port, const sf::Time& _heartbeat) :
+    ClientInfo(const sf::IpAddress& _ip, const PortNumber& _port, const sf::Time& _heartbeat) :
         clientIP(_ip), clientPORT(_port), lastHeartbeat(_heartbeat), heartbeatWaiting(false), heartbeatRetry(0),
         ping(0) {};
     ClientInfo& operator =(const ClientInfo& other) {
@@ -44,7 +44,7 @@ public:
     Server(void(T::*handler)(sf::IpAddress&, const PortNumber&, const PacketID&, sf::Packet&, Server*), T* instance) :
         listenThread(&Server::Listen, this) {
         packetHandler = std::bind(handler, instance, std::placeholders::_1,
-            std::placeholders::_2, std::placeholders::_3, std::placeholders::_4.
+            std::placeholders::_2, std::placeholders::_3, std::placeholders::_4,
             std::placeholders::_5);
     };
     Server(void(*handler)(sf::IpAddress&, const PortNumber&, const PacketID&, sf::Packet&, Server*));
