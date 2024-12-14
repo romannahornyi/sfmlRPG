@@ -13,7 +13,11 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-ADD_LIBRARY(SharedDir SHARED src/sharedDir/MyClass.h src/sharedDir/MyClass.cpp)
+ADD_LIBRARY(SharedDir SHARED 
+    src/sharedDir/PacketTypes.h
+    src/sharedDir/PacketTypes.cpp
+    src/sharedDir/NetworkDefinitions.h
+)
 ADD_LIBRARY(ClientLib STATIC 
     src/clientLib/Client.h
     src/clientLib/Client.cpp
@@ -30,12 +34,17 @@ target_link_libraries(ClientLib SharedDir)
 target_link_libraries(client SharedDir)
 target_link_libraries(server SharedDir)
 target_link_libraries(client sfml-graphics)
+target_link_libraries(client sfml-audio)
+target_link_libraries(client sfml-network)
+target_link_libraries(server sfml-audio)
+target_link_libraries(server sfml-network)
 target_link_libraries(server sfml-graphics)
 target_link_libraries(server ServerLib)
 target_link_libraries(client ClientLib)
 target_include_directories(client PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/sharedDir)
 target_include_directories(server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/sharedDir)
 target_include_directories(ServerLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/sharedDir)
+target_include_directories(ClientLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/sharedDir)
 target_include_directories(server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/serverLib)
 target_include_directories(client PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/clientLib)
 target_compile_features(client PRIVATE cxx_std_17)
