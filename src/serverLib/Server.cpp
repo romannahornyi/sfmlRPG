@@ -1,7 +1,7 @@
 #include "Server.h"
 
 Server::Server(void(*handler)(sf::IpAddress&, const PortNumber&, const PacketID&, sf::Packet&, Server*)) :
-    listenThread(&Server::Listen, this) {
+    listenThread(&Server::Listen, this), running(false) {
     packetHandler = std::bind(handler, std::placeholders::_1, 
         std::placeholders::_2, std::placeholders::_3, std::placeholders::_4,
         std::placeholders::_5);
@@ -127,7 +127,7 @@ void Server::Listen() {
 ClientID Server::AddClient(const sf::IpAddress& _ip, const PortNumber& _port) {
     sf::Lock lock(mutex);
     for (auto& itr : clients) {
-        if (itr.second.clientIP == _ip || itr.second.clientPORT == _port) {
+        if (itr.second.clientIP == _ip && itr.second.clientPORT == _port) {
             return ClientID(Network::NullID);
         }
     }

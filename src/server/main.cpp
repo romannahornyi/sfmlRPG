@@ -60,6 +60,8 @@ int main() {
             server.Update(clock.restart());
         }
         std::cout << "Stopping server..." << std::endl;
+    } else {
+        std::cout << "Server is not running" << std::endl;
     }
     return 0;
 }

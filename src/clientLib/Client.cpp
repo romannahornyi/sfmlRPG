@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client() : listenThread(&Client::Listen, this) {};
+Client::Client() : listenThread(&Client::Listen, this), connected(false) {};
 
 Client::~Client() {
     socket.unbind();
@@ -47,6 +47,7 @@ void Client::Listen() {
     sf::Packet packet;
     sf::IpAddress recvIP;
     PortNumber recvPORT;
+    std::cout << "Beginning to listen..." << std::endl;
     while (connected) {
         packet.clear();
         sf::Socket::Status s = socket.receive(packet, recvIP, recvPORT);

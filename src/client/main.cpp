@@ -6,7 +6,7 @@ void HandlePacket(const PacketID& _pid, sf::Packet& _packet, Client* _client) {
     if ((PacketType)_pid == PacketType::Message) {
         std::string message;
         _packet >> message;
-        std::cout << message;
+        std::cout << message << std::endl;
     } else if ((PacketType)_pid == PacketType::Disconnect) {
         _client->Disconnect();
     }
