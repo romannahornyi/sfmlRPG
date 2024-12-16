@@ -17,10 +17,26 @@ ADD_LIBRARY(SharedDir SHARED
     src/sharedDir/PacketTypes.h
     src/sharedDir/PacketTypes.cpp
     src/sharedDir/NetworkDefinitions.h
+    src/sharedDir/C_Base.h
+    src/sharedDir/C_Client.h
+    src/sharedDir/C_Collidable.h
+    src/sharedDir/C_Controller.h
+    src/sharedDir/C_Health.h
+    src/sharedDir/C_Movable.h
+    src/sharedDir/C_Name.h
+    src/sharedDir/C_Position.h
+    src/sharedDir/C_State.h
+    src/sharedDir/C_TimedComponentBase.h
+    src/sharedDir/Directions.h
+    src/sharedDir/ECS_Types.h
+    src/sharedDir/ResourceManager.h
+    src/sharedDir/Utilities.h
 )
 ADD_LIBRARY(ClientLib STATIC 
     src/clientLib/Client.h
     src/clientLib/Client.cpp
+    src/clientLib/C_Drawable.h
+    src/clientLib/TextureManager.h
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h
