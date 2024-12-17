@@ -2,7 +2,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include "ResourceManager.h"
 
-class TextureManager : public ResourceManager<sf::Texture, TextureManager> {
+class TextureManager : public ResourceManager<TextureManager, sf::Texture> {
 public:
     TextureManager() : ResourceManager("textures.cfg") {};
     sf::Texture* Load(const std::string& _path) {

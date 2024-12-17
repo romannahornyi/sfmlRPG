@@ -37,6 +37,13 @@ ADD_LIBRARY(ClientLib STATIC
     src/clientLib/Client.cpp
     src/clientLib/C_Drawable.h
     src/clientLib/TextureManager.h
+    src/clientLib/Anim_Base.h
+    src/clientLib/Anim_Base.cpp
+    src/clientLib/Anim_Directional.h
+    src/clientLib/Anim_Directional.cpp
+    src/clientLib/C_SpriteSheet.h
+    src/clientLib/SpriteSheet.h
+    src/clientLib/SpriteSheet.cpp
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h

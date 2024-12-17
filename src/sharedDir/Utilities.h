@@ -15,8 +15,8 @@ namespace Utils {
         HMODULE hModule = GetModuleHandle(nullptr);
         if (hModule) {
             char path[256];
-            GetModuleFileName(hModule, (LPWSTR)path, sizeof(path));
-            PathRemoveFileSpec((LPWSTR)path);
+            GetModuleFileName(hModule, (LPSTR)path, sizeof(path));
+            PathRemoveFileSpec((LPSTR)path);
             strcat_s(path, "\\");
             return std::string(path);
         }

@@ -66,7 +66,7 @@ private:
     };
 
     bool Unload(const std::string& _id) {
-        auto itr = resources.find(itr);
+        auto itr = resources.find(_id);
         if (itr == resources.end()) return false;
         delete itr->second.first;
         resources.erase(itr);
@@ -86,7 +86,7 @@ private:
                 keystream >> path;
                 paths.emplace(pathId, path);
             }
-            paths.close();
+            file.close();
             return;
         }
         std::cout << "Failed loading the paths file: " << _pathsFile << std::endl;
