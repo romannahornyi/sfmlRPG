@@ -1,0 +1,195 @@
+#include "SoundManager.h"
+#include "StateManager.h"
+
+SoundManager::SoundManager(AudioManager* _audioMgr) : audioMgr(_audioMgr), lastID(0),  
+    elapsed(0.f), numSounds(0) {};
+
+SoundManager::~SoundManager() { Cleanup(); };
+
+void SoundManager::ChangeState(const StateType& _state) {
+    PauseAll(currentState);
+    UnpauseAll(_state);
+    currentState = _state;
+
+    if (music.find(currentState) != music.end()) return;
+    sf::Music* m = new sf::Music();
+    SoundInfo info("");
+    music.emplace(currentState, std::make_pair(info, m)); 
+};
+
+void SoundManager::RemoveState(const StateType& _state) {
+    auto stateSounds = audio.find(_state)->second;
+    for (auto& s : stateSounds) {
+        RecycleSound(s.first, s.second.second, s.second.first.name);
+    }
+    audio.erase(_state);
+    auto m = music.find(_state);
+    if (m == music.end()) return;
+    if (m->second.second) {
+        delete m->second.second; 
+        --numSounds;
+    }
+    music.erase(_state);
+};
+
+void SoundManager::Cleanup() {
+    for (auto& state : audio) {
+        for (auto& sound : state.second) {
+            audioMgr->ReleaseResource(sound.second.first.name);
+            delete sound.second.second;
+        }
+    }
+    audio.clear();
+    for (auto& itr : recycled) {
+        audioMgr->ReleaseResource(itr.first.second);
+        delete itr.second;
+    }
+    recycled.clear();
+    for (auto& itr : music) {
+        if (itr.second.second) {
+            delete itr.second.second;
+        }
+    }
+    music.clear();
+
+    props.clear();
+    numSounds = 0;
+    lastID = 0;
+};
+
+void SoundManager::Update(float _dt) {
+    elapsed += _dt;
+    if (elapsed < 0.33f) return;
+    auto& container = audio[currentState];
+    for (auto itr = container.begin(); itr != container.end(); ) {
+        if (!itr->second.second.getStatus()) {
+            RecycleSound(itr->first, itr->second.second, itr->second.first.name);
+            itr = container.erase(itr);
+            continue;
+        }
+        ++itr;
+    }
+    auto m = music.find(currentState);
+    if (m == music.end()) return;
+    if (!m->second.second) return;
+    if (m->second.second.getStatus()) return;
+    delete m.second.second;
+    m->second.second = nullptr;
+    --numSounds;
+};
+
+SoundID SoundManager::Play(std::string& _sound, const sf::Vector3f& _pos, bool _loop, bool _relative) {
+    SoundProps* props = GetSoundProprties(_sound);
+    if (!props) return -1;
+    SoundID id;
+    sf::Sound* s = CreateSound(id, props->audioName);
+    if (!s) return -1;
+    SetupSound(s, props, _loop, _relative);
+    s->setPosition(_pos);
+    SoundInfo info(props->audioName);
+    audio[currentState].emplace(id, std::make_pair(info, s));
+    s->play();
+    return id;
+};
+
+bool SoundManager::Play(const SoundID& _sound) {
+    auto itr = audio[currentState].find(_sound);
+    if (itr == audio[currentState].end()) return false;
+    itr->second.second->play();
+    itr->second.first.manualPaused = false;
+    return true;
+};
+
+bool SoundManager::Pause(const SoundID& _sound) {
+    auto itr = audio[currentState].find(_sound);
+    if (itr == audio[currentState].end()) return false;
+    itr->second.second->pause();
+    itr.second.first.manualPaused = true;
+    return true;
+};
+
+bool SoundManager::Stop(const SoundID& _sound) {
+    auto itr = audio[currentState].find(_sound);
+    if (itr == audio[currentState].end()) return false;
+    itr->secnd.second->stop();
+    itr.second.first.manualPaused = true;
+    return true;
+};
+
+bool SoundManager::PlayMusic(const std::string& _id, float _volume, bool _loop) {
+    auto itr = music.find(currentState);
+    if (itr == music.end()) return false;
+    std::string path = audioMgr->GetPath(_id);
+    if (path == "");
+    if (!itr->second.second) {
+        itr->second.second = new sf::Music();
+        ++numSounds;
+    }  
+    sf::Music* m = itr->second.second;
+    if (!m->openFromFile(Utils::GetWorkingDirectory() + path)) {
+        delete m;
+        --numSounds;
+        itr->second.second = nullptr;
+        std::cerr << "[SoundManager] Failed opening music from file: " << path << std::endl;
+        return false;
+    }
+    m->setLoop(false);
+    m->setVolume(_volume);
+    m->setRelativeToListener(true);
+    m->play();
+    itr->second.first.name = _id;
+    return true;
+};
+
+bool SoundManager::PlayMusic(const StateType& _state) {
+    auto itr = music.find(_state);
+    if (itr == music.end()) return false;
+    if (!itr->second.second) return false;
+    itr->second.second->play();
+    itr->second.first.manualPaused = false;
+    return true;
+};
+
+bool SoundManager::PauseMusic(const StateType& _state) {
+    auto itr = music.find(_state);
+    if (itr == music.end()) return false;
+    if (!itr->second.second) return false;
+    itr->second.second->pause();
+    itr->second.first.manualPaused = true;
+    return true;
+};
+
+bool SoundManager::StopMusic(const StateType& _state) {
+    auto itr = music.find(_state);
+    if (itr == music.end()) return false;
+    if (!itr->second.second) return false;
+    itr->second.second->stop();
+    delete itr->second.second;
+    itr->second.second = nullptr;
+    --numSounds;
+    return true;
+};
+
+bool SoundManager::SetPosition(const SoundID& _sound, const sf::Vector3f& _pos) {
+    auto& container = audio[currentState];
+    auto itr = container.find(_sound);
+    if (itr == container.end()) return false;
+    itr->second.second->setPosition(_pos);
+    return true;
+};
+
+bool SoundManager::IsPlaying(const SoundID& _sound) {
+    auto& container = audio[currentState];
+    auto itr = container.find(_sound);
+    return (itr != container.end() ? itr->second.second->getStatus() : false);
+};
+
+SoundProps* SoundManager::GetSoundProperties(const std::string& _file) {
+    auto& sp = props.find(_file);
+    if (sp == props.end()) {
+        if (!LoadProperties(_file)) return nullptr;
+        sp = props.find(_file);
+    }
+    return &sp->second;
+};
+

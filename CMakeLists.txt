@@ -44,6 +44,10 @@ ADD_LIBRARY(ClientLib STATIC
     src/clientLib/C_SpriteSheet.h
     src/clientLib/SpriteSheet.h
     src/clientLib/SpriteSheet.cpp
+    src/clientLib/SoundProps.h
+    src/clientLib/AudioManager.h
+    src/clientLib/SoundManager.h
+    src/clientLib/SoundManager.cpp
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h
