@@ -33,7 +33,7 @@ public:
 
     void Update(float _dt);
 
-    SoundID Play(const SoundID& _sound, const sf::Vector3f& _pos, 
+    SoundID Play(const std::string& _sound, const sf::Vector3f& _pos, 
         bool loop = false, bool relative = false);
 
     bool Play(const SoundID& _sound);
@@ -47,7 +47,7 @@ public:
 
     bool SetPosition(const SoundID& _sound, const sf::Vector3f& _pos);
     bool IsPlaying(const SoundID& _sound);
-    SoundProps* GetSoundProperties(const SoundID& _sound);
+    SoundProps* GetSoundProperties(const std::string& _sound);
 
     static const int MaxSounds = 150;
     static const int SoundCache = 75;       
@@ -56,7 +56,7 @@ private:
     void PauseAll(const StateType& _state);
     void UnpauseAll(const StateType& _state);
 
-    sf::Sound* CreateSound(const SoundID& _id, const std::string& _file);
+    sf::Sound* CreateSound(SoundID& _id, const std::string& _file);
     void SetupSound(sf::Sound* _sound, SoundProps* _props, bool loop = false, bool relative = false);
     void RecycleSound(const SoundID& _id, sf::Sound* _sound, const std::string& _name);
 

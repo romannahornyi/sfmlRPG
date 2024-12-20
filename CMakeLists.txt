@@ -48,10 +48,15 @@ ADD_LIBRARY(ClientLib STATIC
     src/clientLib/AudioManager.h
     src/clientLib/SoundManager.h
     src/clientLib/SoundManager.cpp
+    src/clientLib/C_SoundEmitter.h
+    src/clientLib/C_SoundListener.h
+    src/clientLib/C_UI_Element.h
+    src/clientLib/StateManager.h
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h
     src/serverLib/Server.cpp
+    src/serverLib/C_Attacker.h
 )
 ADD_EXECUTABLE(client src/client/main.cpp)
 ADD_EXECUTABLE(server src/server/main.cpp)

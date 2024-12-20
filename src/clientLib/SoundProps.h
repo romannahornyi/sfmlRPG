@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 
 struct SoundProps {
     SoundProps(std::string& _name) : audioName(_name), volume(100.f), pitch(1.f),

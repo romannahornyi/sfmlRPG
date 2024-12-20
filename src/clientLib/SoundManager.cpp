@@ -78,7 +78,7 @@ void SoundManager::Update(float _dt) {
     --numSounds;
 };
 
-SoundID SoundManager::Play(std::string& _sound, const sf::Vector3f& _pos, bool _loop, bool _relative) {
+SoundID SoundManager::Play(const std::string& _sound, const sf::Vector3f& _pos, bool _loop, bool _relative) {
     SoundProps* props = GetSoundProprties(_sound);
     if (!props) return -1;
     SoundID id;
@@ -193,3 +193,115 @@ SoundProps* SoundManager::GetSoundProperties(const std::string& _file) {
     return &sp->second;
 };
 
+bool SoundManager::LoadProperties(const std::string& _sound) {
+    std::ifstream file;
+    file.open(Utils::GetWorkingDirectory() + "media/Sounds/" + _sound + ".sound");
+    if (!file.is_open()) {
+        std::cout << "[SoundManager] failed to load sound from file: " << _sound << std::endl;
+        return false;
+    }
+    SoundProps prps("");
+    std::string line;
+    while (std::getline(file, line)) {
+        if (line[0] == '|') continue;
+        std::stringstream keystream(line);
+        std::string type;
+        keystream >> type;
+        if (type == "Audio") {
+            keystream >> prps.audioName;
+        } else if (type == "Volume") {
+            keystream >> prps.volume;
+        } else if (type == "Pitch") {
+            keystream >> prps.pitch;
+        } else if (type == "Distance") {
+            keystream >> prps.minDistance;
+        } else if (type == "Attenuation") {
+            keystream >> prps.attenuation;
+        } else {
+            //
+        }
+    }
+    file.close();
+    if (prps.audioName == "") return false;
+    props.emplace(_sound, prps);
+    return true;
+};
+
+void SoundManager::PauseAll(const StateType& _state) {
+    auto& container = audio[_state];
+    for (auto itr = container.begin(); itr != container.end(); ) {
+        if (!itr->second.second->getStatus()) {
+            RecycleSound(itr->first, itr->second.second, itr->second.first);
+            itr = container.erase(itr);
+            continue;
+        }
+        itr->second.second->pause();
+        ++itr;
+    }
+    auto msc = music.find(_state);
+    if (msc == music.end()) return;
+    if (!msc->second.second) return;
+    msc->second.second->pause();
+};
+
+void SoundManager::UnpauseAll(const StateType& _state) {
+    auto& container = audio[_state];
+    for (auto& itr : container) {
+        if (itr.second.first.manualPaused) continue;
+        itr.second.second->play();
+    }
+    auto msc = music.find(_state);
+    if (msc == music.end() || !msc->second.second) return;
+    msc->second.second->play();
+};
+
+sf::Sound* SoundManager::CreateSound(SoundID& _id, const std::string& _audio) {
+    sf::Sound* sound = new sf::Sound();
+    if (!recycled.empty() && (numSounds >= MaxSounds || (int)recycled.size() >= SoundCache)) {
+        auto itr = recycled.begin();
+        while (itr != recycled.end()) {
+            if (itr->first.second == _audio) break;
+            ++itr;
+        }
+        if (itr == recycled.end()) {
+            auto elem = recycled.begin();
+            auto eid = elem->first.first;
+            audioMgr->ReleaseResource(itr->first.second);
+            audioMgr->RequireResource(_audio);
+            sound = elem->second;
+            sound->setBuffer(*audioMgr->GetResource(_audio));
+            recycled.erase(elem);
+        } else {
+            _id = itr->first.first;
+            sound = itr->second;
+            recycled.erase(itr);
+        }
+        return sound;
+    }
+
+    if (numSounds < MaxSounds) {
+        if (audioMgr->RequireResource(_audio)) {
+            sound = new sf::Sound();
+            _id = lastID;
+            ++lastID;
+            ++numSounds;
+            sound->setBuffer(*audioMgr->RequireResource(_audio));
+            return;
+        }
+    }
+    std::cerr << "[SoundManager] Failed to create sound from file: " << _audio << std::endl;
+    return nullptr;
+};
+
+void SoundManager::SetupSound(sf::Sound* _sound, SoundProps* _props, bool _loop, bool _relative) {
+    _sound->setVolume(_props->volume);
+    _sound->setAttenuation(_props->attenuation);
+    _sound->setLoop(_loop);
+    _sound->setRelativeToListener(_relative);
+    _sound->setPitch(_props->pitch);
+    _sound->setMinDistance(_props->minDistance);
+};
+
+void SoundManager::RecycleSound(const SoundID& _id, sf::Sound* _sound, const std::string& _audio) {
+    recycled.emplace_back(std::make_pair(std::make_pair(_id, _audio), _sound));
+};
