@@ -31,6 +31,21 @@ ADD_LIBRARY(SharedDir SHARED
     src/sharedDir/ECS_Types.h
     src/sharedDir/ResourceManager.h
     src/sharedDir/Utilities.h
+    src/sharedDir/Message.h
+    src/sharedDir/Observer.h
+    src/sharedDir/S_Base.h
+    src/sharedDir/Bitmask.h
+    src/sharedDir/EntityManager.h
+    src/sharedDir/EntityManager.cpp
+    src/sharedDir/SystemManager.h
+    src/sharedDir/SystemManager.cpp
+    src/sharedDir/EventQueue.h
+    src/sharedDir/Communicator.h
+    src/sharedDir/EntityMessages.h
+    src/sharedDir/EntityEvents.h
+    src/sharedDir/MessageHandler.h
+    src/sharedDir/S_Base.h
+    src/sharedDir/S_Base.cpp
 )
 ADD_LIBRARY(ClientLib STATIC 
     src/clientLib/Client.h
