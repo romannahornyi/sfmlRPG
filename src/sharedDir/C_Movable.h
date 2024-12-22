@@ -56,14 +56,14 @@ public:
     void Accelerate(const sf::Vector2f& _vec) { acceleration += _vec; };
     void Accelerate(float _x, float _y) { acceleration += sf::Vector2f(_x, _y); };
 
-    void Move() {
-        if (direction == Direction::Up) {
+    void Move(const Direction& _dir) {
+        if (_dir == Direction::Up) {
             acceleration.y -= speed.y;
-        } else if (direction == Direction::Down) {
+        } else if (_dir == Direction::Down) {
             acceleration.y += speed.y;
-        } else if (direction == Direction::Left) {
+        } else if (_dir == Direction::Left) {
             acceleration.x -= speed.x;
-        } else if (direction == Direction::Right) {
+        } else if (_dir == Direction::Right) {
             acceleration.x += speed.x;
         }
     };

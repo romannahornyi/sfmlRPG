@@ -46,6 +46,12 @@ ADD_LIBRARY(SharedDir SHARED
     src/sharedDir/MessageHandler.h
     src/sharedDir/S_Base.h
     src/sharedDir/S_Base.cpp
+    src/sharedDir/S_Control.h
+    src/sharedDir/S_Control.cpp
+    src/sharedDir/S_State.h
+    src/sharedDir/S_State.cpp
+    src/sharedDir/EntitySnapshot.h
+    src/sharedDir/EntitySnapshot.cpp
 )
 ADD_LIBRARY(ClientLib STATIC 
     src/clientLib/Client.h
@@ -78,6 +84,9 @@ ADD_EXECUTABLE(server src/server/main.cpp)
 target_link_libraries(SharedDir sfml-graphics)
 target_link_libraries(SharedDir sfml-audio)
 target_link_libraries(SharedDir sfml-network)
+target_link_libraries(SharedDir shlwapi)
+target_link_libraries(ClientLib shlwapi)
+target_link_libraries(ServerLib shlwapi)
 target_link_libraries(ServerLib SharedDir)
 target_link_libraries(ClientLib SharedDir)
 target_link_libraries(client SharedDir)

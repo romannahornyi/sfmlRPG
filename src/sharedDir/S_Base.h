@@ -28,7 +28,7 @@ public:
 
     virtual void HandleEvent(const EntityID& _entity, const EntityEvent& _event) = 0;
     virtual void Update(float _dt) = 0;
-private:
+protected:
     SystemManager* sysMgr;
     EntityList entities;
     Requirements requiredComponents;

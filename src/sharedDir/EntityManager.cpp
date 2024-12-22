@@ -8,7 +8,7 @@ void EntityManager::SetSystemManager(SystemManager* _sysMgr) {
     sysMgr = _sysMgr;
 };
 
-int EntityManager::AddEntity(const Bitmask& _bitmask, int _id) {
+int EntityManager::AddEntity(Bitmask& _bitmask, int _id) {
     unsigned int entity = (_id == -1 ? idCounter : _id);
     if (!entities.emplace(entity, EntityData()).second) return -1;
     if (_id == -1) ++idCounter;
@@ -78,13 +78,13 @@ bool EntityManager::RemoveEntity(const EntityID& _entity) {
 bool EntityManager::AddComponent(const EntityID& _entity, const Component& _comp) {
     auto itr = entities.find(_entity);
     if (itr == entities.end()) return false;
-    if (itr->second.bitmask.GetBit((unsigned int)_comp)) return false;
+    if (itr->second.mask.GetBit((unsigned int)_comp)) return false;
     auto itr2 = compFactory.find(_comp);
     if (itr2 == compFactory.end()) return false;
     C_Base* c = itr2->second();
     itr->second.components.emplace_back(c);
-    itr->second.bitmask.TurnOnBit((unsigned int)_comp);
-    sysMgr->EntityModified(_entity, itr->second.bitmask);
+    itr->second.mask.TurnOnBit((unsigned int)_comp);
+    sysMgr->EntityModified(_entity, itr->second.mask);
     return true;
 };
 
@@ -95,23 +95,23 @@ bool EntityManager::HasEntity(const EntityID& _entity) {
 bool EntityManager::RemoveComponent(const EntityID& _entity, const Component& _comp) {
     auto itr = entities.find(_entity);
     if (itr == entities.end()) return false;
-    if (!itr->second.bitmask.GetBit((unsigned int)_comp)) return false;
+    if (!itr->second.mask.GetBit((unsigned int)_comp)) return false;
     auto& container = itr->second.components;
-    auto c = std::find_if(container.begin(), container.end(), [](C_Base* _c){
+    auto c = std::find_if(container.begin(), container.end(), [&_comp](C_Base* _c){
         return _c->GetType() == _comp;
     });
     if (c == container.end()) return false;
     delete (*c);
     container.erase(c);
-    itr->second.bitmask.ClearBit((unsigned int)_comp);
-    sysMgr->EntityModified(_entity, itr->second.bitmask);
+    itr->second.mask.ClearBit((unsigned int)_comp);
+    sysMgr->EntityModified(_entity, itr->second.mask);
     return true;
 };
 
 bool EntityManager::HasComponent(const EntityID& _entity, const Component& _comp) {
     auto itr = entities.find(_entity);
     if (itr == entities.end()) return false;
-    return (itr->second.components.find(_comp) != itr->second.components.end());
+    return itr->second.mask.GetBit((unsigned int)_comp);
 };
 
 void EntityManager::Purge() {
@@ -121,7 +121,7 @@ void EntityManager::Purge() {
             delete c;
         }
         itr.second.components.clear();
-        itr.second.bitmask.Clear();
+        itr.second.mask.Clear();
     }
     entities.clear();
     idCounter = 0;

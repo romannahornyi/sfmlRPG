@@ -62,7 +62,7 @@ void SoundManager::Update(float _dt) {
     if (elapsed < 0.33f) return;
     auto& container = audio[currentState];
     for (auto itr = container.begin(); itr != container.end(); ) {
-        if (!itr->second.second.getStatus()) {
+        if (!itr->second.second->getStatus()) {
             RecycleSound(itr->first, itr->second.second, itr->second.first.name);
             itr = container.erase(itr);
             continue;
@@ -72,14 +72,14 @@ void SoundManager::Update(float _dt) {
     auto m = music.find(currentState);
     if (m == music.end()) return;
     if (!m->second.second) return;
-    if (m->second.second.getStatus()) return;
-    delete m.second.second;
+    if (m->second.second->getStatus()) return;
+    delete m->second.second;
     m->second.second = nullptr;
     --numSounds;
 };
 
 SoundID SoundManager::Play(const std::string& _sound, const sf::Vector3f& _pos, bool _loop, bool _relative) {
-    SoundProps* props = GetSoundProprties(_sound);
+    SoundProps* props = GetSoundProperties(_sound);
     if (!props) return -1;
     SoundID id;
     sf::Sound* s = CreateSound(id, props->audioName);
@@ -104,15 +104,15 @@ bool SoundManager::Pause(const SoundID& _sound) {
     auto itr = audio[currentState].find(_sound);
     if (itr == audio[currentState].end()) return false;
     itr->second.second->pause();
-    itr.second.first.manualPaused = true;
+    itr->second.first.manualPaused = true;
     return true;
 };
 
 bool SoundManager::Stop(const SoundID& _sound) {
     auto itr = audio[currentState].find(_sound);
     if (itr == audio[currentState].end()) return false;
-    itr->secnd.second->stop();
-    itr.second.first.manualPaused = true;
+    itr->second.second->stop();
+    itr->second.first.manualPaused = true;
     return true;
 };
 
@@ -185,7 +185,7 @@ bool SoundManager::IsPlaying(const SoundID& _sound) {
 };
 
 SoundProps* SoundManager::GetSoundProperties(const std::string& _file) {
-    auto& sp = props.find(_file);
+    auto sp = props.find(_file);
     if (sp == props.end()) {
         if (!LoadProperties(_file)) return nullptr;
         sp = props.find(_file);
@@ -231,7 +231,7 @@ void SoundManager::PauseAll(const StateType& _state) {
     auto& container = audio[_state];
     for (auto itr = container.begin(); itr != container.end(); ) {
         if (!itr->second.second->getStatus()) {
-            RecycleSound(itr->first, itr->second.second, itr->second.first);
+            RecycleSound(itr->first, itr->second.second, itr->second.first.name);
             itr = container.erase(itr);
             continue;
         }
@@ -285,8 +285,8 @@ sf::Sound* SoundManager::CreateSound(SoundID& _id, const std::string& _audio) {
             _id = lastID;
             ++lastID;
             ++numSounds;
-            sound->setBuffer(*audioMgr->RequireResource(_audio));
-            return;
+            sound->setBuffer(*audioMgr->GetResource(_audio));
+            return sound;
         }
     }
     std::cerr << "[SoundManager] Failed to create sound from file: " << _audio << std::endl;

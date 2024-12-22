@@ -28,7 +28,7 @@ public:
 
     void SetSystemManager(SystemManager* _sysMgr);
 
-    int AddEntity(const Bitmask& _mask, int _id = -1);
+    int AddEntity(Bitmask& _mask, int _id = -1);
     virtual int AddEntity(const std::string& _file, int _id = -1);
 
     bool RemoveEntity(const EntityID& _id);
@@ -39,9 +39,9 @@ public:
     T* GetComponent(const EntityID& _entity, const Component& _comp) {
         auto entity = entities.find(_entity);
         if (entity == entities.end()) return nullptr;
-        if (!entity->second.bitmask.GetBit(_comp)) return nullptr;
+        if (!entity->second.mask.GetBit((unsigned int)_comp)) return nullptr;
         auto& container = entity->second.components;
-        auto itr = std::find_if(container.begin(), container.end(), [](C_Base* _c){
+        auto itr = std::find_if(container.begin(), container.end(), [&_comp](C_Base* _c){
             return _c->GetType() == _comp;
         });
         return (itr != container.end() ? dynamic_cast<T*>(*itr) : nullptr);
