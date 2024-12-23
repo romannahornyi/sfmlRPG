@@ -83,6 +83,8 @@ ADD_LIBRARY(ClientLib STATIC
     src/clientLib/SharedContext.h
     src/clientLib/Window.h
     src/clientLib/Window.cpp
+    src/clientLib/BaseState.h
+    src/clientLib/StateManager.cpp
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h
