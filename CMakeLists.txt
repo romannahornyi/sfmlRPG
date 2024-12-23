@@ -73,11 +73,29 @@ ADD_LIBRARY(ClientLib STATIC
     src/clientLib/C_SoundListener.h
     src/clientLib/C_UI_Element.h
     src/clientLib/StateManager.h
+    src/clientLib/EventManager.h
+    src/clientLib/EventManager.cpp
+    src/clientLib/GUI_Event.h
+    src/clientLib/Map.h
+    src/clientLib/Map.cpp
+    src/clientLib/ClientEntityManager.h
+    src/clientLib/ClientEntityManager.cpp
+    src/clientLib/SharedContext.h
+    src/clientLib/Window.h
+    src/clientLib/Window.cpp
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h
     src/serverLib/Server.cpp
     src/serverLib/C_Attacker.h
+    src/serverLib/Map.h
+    src/serverLib/Map.cpp
+    src/serverLib/S_Movement.h
+    src/serverLib/S_Movement.cpp
+    src/serverLib/Map.h
+    src/serverLib/Map.cpp
+    src/serverLib/ServerEntityManager.h
+    src/serverLib/ServerEntityManager.cpp
 )
 ADD_EXECUTABLE(client src/client/main.cpp)
 ADD_EXECUTABLE(server src/server/main.cpp)

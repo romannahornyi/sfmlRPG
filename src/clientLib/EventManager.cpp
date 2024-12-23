@@ -84,10 +84,10 @@ void EventManager::HandleEvent(GUI_Event& _guiEvent) {
                 e_itr.first != EventType::GUI_Release && e_itr.first != EventType::GUI_Leave) {
                     continue;
             }
-            if ((e_itr.first == EventType::GUI_Click && _guiEvent.type != EventType::GUI_Click) ||
-                (e_itr.first == EventType::GUI_Release && _guiEvent.type != EventType::GUI_Release) ||
-                (e_itr.first == EventType::GUI_Hover && _guiEvent.type != EventType::GUI_Hover) ||
-                (e_itr.first == EventType::GUI_Leave && _guiEvent.type != EventType::GUI_Leave)) {
+            if ((e_itr.first == EventType::GUI_Click && _guiEvent.type != GUI_Event_Type::Click) ||
+                (e_itr.first == EventType::GUI_Release && _guiEvent.type != GUI_Event_Type::Release) ||
+                (e_itr.first == EventType::GUI_Hover && _guiEvent.type != GUI_Event_Type::Hover) ||
+                (e_itr.first == EventType::GUI_Leave && _guiEvent.type != GUI_Event_Type::Leave)) {
                     continue;
             }
             if (strcmp(e_itr.second.gui._interface, _guiEvent._interface) ||
@@ -135,14 +135,14 @@ void EventManager::Update() {
                 auto otherCallbacks = callbacks.find(StateType(0));
                 
                 if (stateCallbacks != callbacks.end()) {
-                    auto callItr = callbacks.find(bind->name);
-                    if (callItr != stateCallbacks.end()) {
+                    auto callItr = stateCallbacks->second.find(bind->name);
+                    if (callItr != stateCallbacks->second.end()) {
                         callItr->second(&bind->details);
                     }
                 }
                 if (otherCallbacks != callbacks.end()) {
-                    auto callItr = callbacks.find(bind->name);
-                    if (callItr != otherCallbacks.end()) {
+                    auto callItr = otherCallbacks->second.find(bind->name);
+                    if (callItr != otherCallbacks->second.end()) {
                         callItr->second(&bind->details);
                     }
                 }
@@ -193,8 +193,8 @@ void EventManager::LoadBindings() {
                 }
                 char* w = new char[window.length() + 1];
                 char* e = new char[element.length() + 1];
-                stcpy_s(w, window.length() + 1, window.c_str());
-                stcpy_s(e, element.length() + 1, element.c_str());
+                strcpy_s(w, window.length() + 1, window.c_str());
+                strcpy_s(e, element.length() + 1, element.c_str());
                 eventInfo.gui._interface = w;
                 eventInfo.gui.element = e;
             } else {

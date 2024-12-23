@@ -7,8 +7,8 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <string>
 #include <iostream>
+#include <string.h>
 #include "Utilities.h"
 #include "GUI_Event.h"
 
