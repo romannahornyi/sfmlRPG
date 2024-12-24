@@ -85,6 +85,17 @@ ADD_LIBRARY(ClientLib STATIC
     src/clientLib/Window.cpp
     src/clientLib/BaseState.h
     src/clientLib/StateManager.cpp
+    src/clientLib/State_Intro.h
+    src/clientLib/State_Intro.cpp
+    src/clientLib/NetSettings.h
+    src/clientLib/S_Network.h
+    src/clientLib/S_Network.cpp
+    src/clientLib/S_Renderer.h
+    src/clientLib/S_Renderer.cpp
+    src/clientLib/State_Game.h
+    src/clientLib/State_Game.cpp
+    src/clientLib/S_Movement.h
+    src/clientLib/S_Movement.cpp
 )
 ADD_LIBRARY(ServerLib STATIC 
     src/serverLib/Server.h
